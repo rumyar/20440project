@@ -1,4 +1,4 @@
-# 20440 project
+# 20.440 project
 The goal of the files in this repo is to take data from the publication, 'Pan-cancer analysis of neoepitopes' by Vihinen et al., 2018 and online published PON-P2 pathogenicity prediction and visualize the frequency of base pair/amino acid substitutions in neoepitopes across cancer types using dendrograms and heatmaps and evaluate if overarching sigantures assist in explaining the variation seen in cancer neoepitopes. <br />
 <br />
 The overall project strives to create an predictive model based on these signatures to see if it possible to predict basepair/amino acid substitutions based on the cancer type of a particular neoantigen. The hope is that these predictions will help in the development of novel cancer vaccines for cancer types. 
@@ -135,21 +135,9 @@ While the second graphing approach described above improved visibility of the va
 ### 3D visualization to encompass a greater amount of the variation in the data
 Furthermore, since the cumulative variation explained by the first two PCs is relatively low, a 3rd PC was incorporated in an attempt to visualize a greater amount of the variation in the data. This 3D visualization is accomplished using the plt.figure and ax.scatter functions and passing in three variables (x, y and z). An edge color (black) is provided to further illustrate the differences between the individual neoepitope samples. 
 ### tSNE analysis
-A secondary dimmensionality reduction technique, tSNE, was used to identify 
-tsne2 = TSNE(n_components=2, perplexity = 200).fit_transform(num_data_std.sample(20000))
-sb.lmplot( x="tSNE1", y="tSNE2", data=tsne, fit_reg=False, hue='Cluster', legend=True, scatter_kws={"s": 20})
-
+A secondary dimmensionality reduction technique, tSNE, was used since it is highly useful for high-dimensional data (n ~= 50 features). This is because tSNE converts the similarities between samples into joint probabilities and minimizes the divergence between these probabilities to create the lower dimension data. Therefore, the manifold dimensionality reduction produces data that encompasses a greater portion of the manifold space since it is based on joint probabilities rather than discrete values. The tSNE manifold dimensionality reduction for this project is performed using sklearn.manifold.TSNE. The perplexity value is the number of nearest neighbors that is used in the other manifold learning algorithms and larger perplexity values are used for larger datasets. For the purposes of this project, we use a perplexity value of 80, as recommended by the manifold.tsne documentation. To visualize how the tSNE fit to the dataset, the data was plotting using seaborn.lmplot and colored based on cancer classification. In future work, we plan to reduce the overcrowding in these graphs as well. *definitions of tSNE derived from documentation: https://scikit-learn.org/stable/modules/generated/sklearn.manifold.TSNE.html* 
 ### K-means clustering with PC data/tSNE data 
-#cluster using kmeans
-cluster_n = 11
-kmeans = KMeans(n_clusters=cluster_n)  
-kmeans.fit(nd)  
-plt.scatter(nd_df_sum['PC1_sum'],nd_df_sum['PC2_sum'], c=kmeans.labels_, cmap= plt.cm.Set3, s=2)
-
-#cluster using kmeans
-cluster_n = 13
-kmeans = KMeans(n_clusters=cluster_n)  
-kmeans.fit(tsne1)  
+Finally, we used K-means heirarchial clustering to group the neoepitope sample observations into a set number of clusters (n). The number of clusters was optimized to maximize both the homogeneity and completeness scores for both the tSNE and PCA reduced neoepitope data. Using n=8 clusters for the PCA reduced data and an n=13 clusters for the tSNE reduced data, the data is fit to the data by *kmeans = KMeans(n_clusters=cluster_n), kmeans.fit(nd/tsne1)* where *nd* is the PCA reduced data and *tsne1* is the tSNE reduced data. The k-means clustered data is then visualized by plotting the data for PCA/tSNE 1 vs PCA/tSNE 2 and coloring each neoepitope sample based on their assigned kmeans label using the function *c = kmeans.labels_* These identified clusters can be further interrogated to identify their use as predictive signatures in the following aim, Aim 3: Developing a Classifier. *note that this is not contained in this repo* 
 
 # Sources:
 [1] Niroula, A., & Vihinen, M. (2015). Harmful somatic amino acid substitutions affect key pathways in cancers. BMC Medical Genomics, 8(1), 1–12. https://doi.org/10.1186/s12920-015-0125-x <br />
