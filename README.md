@@ -1,5 +1,7 @@
 # 20440 project
-The goal of the files in this repo is to take data from the publication, 'Pan-cancer analysis of neoepitopes' by Vihinen et al., 2018 and online published PON-P2 pathogenicity prediction and visualize the frequency of base pair/amino acid substitutions in neoepitopes across cancer types using dendrograms and heatmaps and evaluate if overarching sigantures assist in explaining the variation seen in cancer neoepitopes. This repo also strives to create an predictive model based on these signatures to see if it possible to predict basepair/amino acid substitutions based on the cancer type of a particular neoantigen. The hope is that these predictions will help in the development of novel cancer vaccines for cancer types. 
+The goal of the files in this repo is to take data from the publication, 'Pan-cancer analysis of neoepitopes' by Vihinen et al., 2018 and online published PON-P2 pathogenicity prediction and visualize the frequency of base pair/amino acid substitutions in neoepitopes across cancer types using dendrograms and heatmaps and evaluate if overarching sigantures assist in explaining the variation seen in cancer neoepitopes. <br />
+<br />
+The overall project strives to create an predictive model based on these signatures to see if it possible to predict basepair/amino acid substitutions based on the cancer type of a particular neoantigen. The hope is that these predictions will help in the development of novel cancer vaccines for cancer types. 
 
 ## General Outline (and Summary of Files)
 #### Data Sets: 'Pan-cancer' data-set, pon-p2 data, data1, cancerfreq, data2
@@ -127,11 +129,27 @@ Once, the results of the PCA generated, they are plotted using seaborn.lmplot an
 ### determine the maximum contributing features
 Once our PCA graph has been generated, it is important to understand which features are contributing most strongly to our principal components. This is accomplished by calculating the loadings by taking the transpose of the components of the PCA and multiplying them by the square root of the explained variance. *pca3.components_.T x np.sqrt(pca3.explained_variance_)* Once the loadings have been calculated, it is possible to generate a loadings graph to visualize the spread of the features as a function of their contribution to PC1 and PC2. From this graph, it is possible to create a list of the most contributing features by calculating the distance of each point from the origin, and sorting this list for the maximum distance from the origin. The farther a point is from the origin, the greater contribution it has on both PC1 and PC2. From this process, we are able to see that C to T mutations and G to A mutations exhibit the greatest contribution to the variance explained by PC1 and PC2. 
 ### visualize PCA for individual cancers
-Since our initial PCA plot was overcrowded, we strive to improve 
+Since our initial PCA plot was overcrowded, blurry, and overly dense with cancer types, we strive to improve this figure to better demonstrate the similarities and differences between cancer types as a function of their spread in principal component space. The first approach we took to reducing the information density in our PCA graph was to only graph a sample of our >250,000 neoepitopes (df.sample(2,000)). This resulted in less overcrowding but it was still overly dense with cancer types. The second approach we took was to highlight "interesting" cancer types, extract only thse cancer types from our original dataframe, and subplot a sampling of the data from these cancer types (with edges highlighted) to better visualize the spread in PC space for individual cancers. This visualization was accomplished using seaborn.FacetGrid, and each sample was colored based on their cancer type and outlined in black to highlight the individual neoeptiope samples. We repeated this process for 6 different cancer types and compared their distribution across the PC space. *Sampling was accomplished using the pd.sample(n) function.* 
 ### plot a sampling of the data to better graphically visualize the spread across multiple PCs
+While the second graphing approach described above improved visibility of the variation within individual cancer types in PC space, it is still challenging to visualize variation between individual cancer types. To counter this, we created filtered data sets containing individual cancer types (in the example shown - melanoma, AML and colorectum) and graphed samples of these filtered data sets juxtaposed on top of all of the other cancer types. This third approach assists in visualization of the variation between cancer types as well as in comparison to the the larger dataset (as shown in grey). We can see that while the distribution of samples in PC2 space remains largely the same over cancer types, the variation in distribution in PC1 space is far greater in AML cancer types than in colorectum, than in AML. This is consistent with the individual findings in our second approach. 
 ### 3D visualization to encompass a greater amount of the variation in the data
+Furthermore, since the cumulative variation explained by the first two PCs is relatively low, a 3rd PC was incorporated in an attempt to visualize a greater amount of the variation in the data. This 3D visualization is accomplished using the plt.figure and ax.scatter functions and passing in three variables (x, y and z). An edge color (black) is provided to further illustrate the differences between the individual neoepitope samples. 
 ### tSNE analysis
+A secondary dimmensionality reduction technique, tSNE, was used to identify 
+tsne2 = TSNE(n_components=2, perplexity = 200).fit_transform(num_data_std.sample(20000))
+sb.lmplot( x="tSNE1", y="tSNE2", data=tsne, fit_reg=False, hue='Cluster', legend=True, scatter_kws={"s": 20})
+
 ### K-means clustering with PC data/tSNE data 
+#cluster using kmeans
+cluster_n = 11
+kmeans = KMeans(n_clusters=cluster_n)  
+kmeans.fit(nd)  
+plt.scatter(nd_df_sum['PC1_sum'],nd_df_sum['PC2_sum'], c=kmeans.labels_, cmap= plt.cm.Set3, s=2)
+
+#cluster using kmeans
+cluster_n = 13
+kmeans = KMeans(n_clusters=cluster_n)  
+kmeans.fit(tsne1)  
 
 # Sources:
 [1] Niroula, A., & Vihinen, M. (2015). Harmful somatic amino acid substitutions affect key pathways in cancers. BMC Medical Genomics, 8(1), 1–12. https://doi.org/10.1186/s12920-015-0125-x <br />
