@@ -19,9 +19,45 @@ Takes in data2 as an input and outputs
 ### load in data
 Pan-cancer data set derived from supplementary figure 1 of 'Pan-cancer analysis of neoepitopes' by Vihinen et al., 2018. <br />
 Cancer type data set derived from PON-P2 pathogenicity prediction for various somatic mutations found in cancer. Datasets found at this url: http://structure.bmc.lu.se/PON-P2/cancer30.html/ <br />
+
+From our submitted draft report:
+'PON-P2 uses a machine-learning algorithm to predict the pathogenicity of amino acid substitutions based on amino acid features, Gene Ontology annotations, evolutionary conservation, and annotations of functional sites for 30 different cancer types.[1] PON-P2 categorizes variants into pathogenic, neutral, and unknown groups and includes estimates of prediction reliability.[1] From the PON-P2 database, we consolidated the mutation features of the COSMIC data-set (Catalogue of Somatic Mutations in Cancer) and data-set of 30 different cancer types to yield our initial master data set. The cancers included were ALL, AML, Bladder, Breast, Cervix, CLL, Colorectum, Esophageal, Glioblastoma, Glioma Low Grade, Head and Neck, Kidney Chromophobe, Kideny Clear Cell, Kidney Papillary, Liver, Lung Adeno, Lung Small Cell, Lung Squamous, Lymphoma B-cell, Medulloblastoma, Melanoma, Myeloma, Neuroblastoma, Ovary, Pancreas, Pilocytic Astrocytoma, Prostate, Stomach, Thyroid, Uterus. The given features for this initial master dataset included amino acid substitution, cancer classification, Ensembl Gene ID, length normalized to variant frequency, neoantigen frequency, PON-P2 predicted probability, PON-P2 error, protein length, variant frequency, original nucleotide, and altered nucleotide. There were a total of 251,544 mutations that are included the raw master database.' <br />
+
 Pan-cancer data set is read in as variable 'S1' and cancer type data from PON-P2 pathogenicity prediction is read in as variable name 'cosmic'. 
 
-### 
+### create numerical indices for classifying base-pair/amino acid substitutions
+By iterating through the 'reference nucleotide' and 'altered nucleotide' columns of our merged dataframe, numerical values were assigned based on each base-pair switch. These base pair switches are 'A to T', 'A to G', 'A to C', 'T to A', 'T to G', 'T to C', 'G to A', 'G to T', 'G to C', 'C to A', 'C to T', and 'C to G' and each swtich was assigned a numerical value from 1-12 respectively.  <br />
+Similarly, a numerical index was create for the pathogenicity score where a score of 1 was assigned for a 'pathogenic' designation for a neoepitope and a score of 0 was assigned for a 'unknown or neutral' designation for a neoepitope. This was done by assigning binary scoring while iterating through the 'PON-P2 classification' column of the working dataframe.  <br />
+Finally, a numerical index was created for the amino acid substitution by iterating through the 'Amino_acid_substitution' column of our merged database and parsing out the wild-type amino acid (at position 0) and the mutated amino acid (at position -1, or final position). Each amino acid was assigned a category based on its polarity and charge so the four designations were (non-polar neutral, polar neutral, polar basic and polar acidic). Then, the switches between amino acid designations were given a numerical score from 1-12 (as demonstrated in the sub-key) <br />
+| Designation | Amino Acids | 
+| --- | --- | 
+| np_neutral | ['W', 'F', 'G', 'A', 'V', 'I', 'L', 'M', 'P'] | 
+| p_neutral | ['Y', 'S', 'T', 'N', 'Q', 'C'] | 
+| p_acidic | ['D', 'E']| 
+| p_basic | ['R', 'K', 'H']| 
+
+### create a sub key
+For the creation of categorical variables, a key was created to reference the numerical values assigned for each qualitative entry in BasePair Substitution, Pathogenicity and Amino Acid Substitution. Base Pair substitutions were grouped as A to T, C to G, etc resulting in 12 groupings. Amino Acid Substitutions were groups as non-polar neutral to polar neutral, non-polar neutral to polar acidic, polar acidic to polar basic, etc. 
+
+| Number | Base Pair Substitution | Pathogenicity | Amino Acid Sub |
+| --- | --- | --- | --- |
+| 0 | None | Pathogenic | None |
+| 1 | A to T | Neutral/Unknown | NP neutral to P neutral |
+| 2 | A to G | N/A | NP neutral to P acidic |
+| 3 | A to C | N/A | NP neutral to P basic |
+| 4 | T to A | N/A | P neutral to NP neutral |
+| 5 | T to G | N/A | P neutral to P acidic |
+| 6 | T to C | N/A | P neutral to P basic |
+| 7 | G to A | N/A | P acidic to NP neutral |
+| 8 | G to T | N/A | P acidic to P neutral |
+| 9 | G to C | N/A | P acidic to P basic |
+| 10 | C to A | N/A | P basic to NP neutral |
+| 11 | C to T | N/A | P basic to P neutral |
+| 12 | C to G | N/A | P basic to P acidic |
+
+### clean up dataframe
+Once all of the categorical variables have been given numerical indices, the data was stripped of its qualitative variables (Ref_nucleotide, Altered nucleotide, PON-P2 classification) to output a numerical data set, sorted by the geneID, for use moving forward.
+
 ## Aim 1: Dendrogram and Heatmap
 ### tldr: takes in data1 as an input and outputs a cancer freq dataframe with frequencies of base pair/amino acid substitutions, a heatmap visualizing these frequencies and a dendrogram/heatmap with cophenetic correlation coefficienct optimized linkage and distance metrics
 
@@ -92,3 +128,16 @@ Nested for loops are created to iterate through combinations of linkage and dist
 
 ### generate final heatmap/dendrogram with optimized linkage and distance metrics
 Heatmap was generated using seaborn clustermap and fed in 'euclidean' and 'average' for the distance and linkage metrics respectively. Dendrogram was generated using scipy.cluster.hierarchy.dendorgram. 
+
+Sources:
+[1] Niroula, A., & Vihinen, M. (2015). Harmful somatic amino acid substitutions affect key pathways in cancers. BMC Medical Genomics, 8(1), 1–12. https://doi.org/10.1186/s12920-015-0125-x <br />
+
+[2] Jaffee, E. R., & Lutz, E. M. (2014). Jaffee, E. R., & Lutz, E. M. (2014). NIH Public Access. Cancer Immunol Res, 154(11), 2262–2265. https://doi.org/10.1016/j.pain.2013.06.005.Re-Thinking. Cancer Immunol Res, 154(11), 2262–2265. https://doi.org/10.1016/j.pain.2013.06.005. <br />
+
+[3] Brennick, C. A., George, M. M., Corwin, W. L., Srivastava, P. K., & Ebrahimi-Nik, H. (2014). Neoepitopes as cancer immunotherapy targets: key challenges and opportunities. Immunotherapy, 9(4), 361–371. https://doi.org/10.1016/j.jscs.2014.12.002 <br />
+
+[4] Teku, G. N., & Vihinen, M. (2018). Pan-cancer analysis of neoepitopes. Scientific Reports, 8(1), 1–10. https://doi.org/10.1038/s41598-018-30724-y <br />
+
+[5] Riera, C., Padilla, N., & de la Cruz, X. (2016). The Complementarity Between Protein-Specific and General Pathogenicity Predictors for Amino Acid Substitutions. Human Mutation, 37(10), 1013–1024. https://doi.org/10.1002/humu.23048 <br />
+
+[6] Fritsch, E. F., Rajasagi, M., Ott, P. A., Brusic, V., Hacohen, N., & Wu, C. J. (2014). HLA-binding properties of tumor neoepitopes in humans. Cancer Immunol Res, 71(11), 3831–3840. https://doi.org/10.1158/0008-5472.CAN-10-4002.BONE <br />
