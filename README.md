@@ -1,19 +1,27 @@
 # 20440 project
+The goal of the files in this repo is to take data from the publication, 'Pan-cancer analysis of neoepitopes' by Vihinen et al., 2018 and online published PON-P2 pathogenicity prediction and visualize the frequency of base pair/amino acid substitutions in neoepitopes across cancer types using dendrograms and heatmaps and evaluate if overarching sigantures assist in explaining the variation seen in cancer neoepitopes. This repo also strives to create an predictive model based on these signatures to see if it possible to predict basepair/amino acid substitutions based on the cancer type of a particular neoantigen. The hope is that these predictions will help in the development of novel cancer vaccines for cancer types. 
 ## General Outline
 #### Data Sets: 'Pan-cancer' data-set, pon-p2 data, data1, cancerfreq, data2
-Pan-cancer data set derived from supplementary figure 1 of 'Pan-cancer analysis of neoepitopes' by Vihinen et al., 2018. 
-Cancer type data set derived from PON-P2 pathogenicity prediction for various somatic mutations found in cancer. Datasets found at this url: http://structure.bmc.lu.se/PON-P2/cancer30.html/
-data1/data2: merged datasets combining data from source 1 and source 2 based on ensembl gene ID
-cancerfreq: dataset generated from base pair/amino acid substitution frequencies in various cancer types (see Aim 1 code).
+Pan-cancer data set derived from supplementary figure 1 of 'Pan-cancer analysis of neoepitopes' by Vihinen et al., 2018. <br />
+Cancer type data set derived from PON-P2 pathogenicity prediction for various somatic mutations found in cancer. Datasets found at this url: http://structure.bmc.lu.se/PON-P2/cancer30.html/ <br />
+data1/data2: merged datasets combining data from source 1 and source 2 based on ensembl gene ID. Note that data1 and data2 contain the same data and are only numerically distinguished by which aim they are used for. <br />
+cancerfreq: dataset generated from base pair/amino acid substitution frequencies in various cancer types (see Aim 1 code). <br />
 #### Aim 0: Creating Working DataFrame
 Takes in pan-cancer data set and pon-p2 data as inputs and outputs a merged dataset (data1/data2) for use in future aims. Merging done on the basis of Ensembl-gene ID. 
 #### Aim 1: Dendrogram and Heatmap
 Takes in data1 as an input and outputs a cancer freq dataframe with frequencies of base pair/amino acid substitutions, a heatmap visualizing these frequencies and a dendrogram/heatmap with cophenetic correlation coefficienct optimized linkage and distance metrics
 #### Aim 2: PCA, tSNE and K-means Clustering
+Takes in data2 as an input and outputs 
 
 ## Aim 0: Creating Working DataFrame
 ### tldr: takes in pan cancer data set and pon-p2 data as inputs and outputs a merged dataset (data1/data2) for use in future aims
 
+### load in data
+Pan-cancer data set derived from supplementary figure 1 of 'Pan-cancer analysis of neoepitopes' by Vihinen et al., 2018. <br />
+Cancer type data set derived from PON-P2 pathogenicity prediction for various somatic mutations found in cancer. Datasets found at this url: http://structure.bmc.lu.se/PON-P2/cancer30.html/ <br />
+Pan-cancer data set is read in as variable 'S1' and cancer type data from PON-P2 pathogenicity prediction is read in as variable name 'cosmic'. 
+
+### 
 ## Aim 1: Dendrogram and Heatmap
 ### tldr: takes in data1 as an input and outputs a cancer freq dataframe with frequencies of base pair/amino acid substitutions, a heatmap visualizing these frequencies and a dendrogram/heatmap with cophenetic correlation coefficienct optimized linkage and distance metrics
 
