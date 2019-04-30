@@ -1,7 +1,20 @@
 # 20440 project
+## General Outline
+#### Data Sets: 'Pan-cancer' data-set, pon-p2 data, data1, cancerfreq, data2
+Pan-cancer data set derived from supplementary figure 1 of 'Pan-cancer analysis of neoepitopes' by Vihinen et al., 2018. 
+Cancer type data set derived from PON-P2 pathogenicity prediction for various somatic mutations found in cancer. Datasets found at this url: http://structure.bmc.lu.se/PON-P2/cancer30.html/
+data1/data2: merged datasets combining data from source 1 and source 2 based on ensembl gene ID
+cancerfreq: dataset generated from base pair/amino acid substitution frequencies in various cancer types (see Aim 1 code).
+#### Aim 0: Creating Working DataFrame
+Takes in pan-cancer data set and pon-p2 data as inputs and outputs a merged dataset (data1/data2) for use in future aims. Merging done on the basis of Ensembl-gene ID. 
+#### Aim 1: Dendrogram and Heatmap
+Takes in data1 as an input and outputs a cancer freq dataframe with frequencies of base pair/amino acid substitutions, a heatmap visualizing these frequencies and a dendrogram/heatmap with cophenetic correlation coefficienct optimized linkage and distance metrics
+#### Aim 2: PCA, tSNE and K-means Clustering
 
 ## Aim 0: Creating Working DataFrame
-## Aim 1: Using a heatmap and dendrogram 
+### tldr: takes in pan cancer data set and pon-p2 data as inputs and outputs a merged dataset (data1/data2) for use in future aims
+
+## Aim 1: Dendrogram and Heatmap
 ### tldr: takes in data1 as an input and outputs a cancer freq dataframe with frequencies of base pair/amino acid substitutions, a heatmap visualizing these frequencies and a dendrogram/heatmap with cophenetic correlation coefficienct optimized linkage and distance metrics
 
 ### load in data
