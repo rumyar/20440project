@@ -10,18 +10,19 @@ Drop all columns that contain qualitative variables so that the dataframe only c
 ### create a base pair sub key
 For the creation of categorical variables, a key was created to reference the numerical values assigned for each qualitative entry in BasePair Substitution, Pathogenicity and Amino Acid Substitution. Base Pair substitutions were grouped as A to T, C to G, etc resulting in 12 groupings. Amino Acid Substitutions were groups as non-polar neutral to polar neutral, non-polar neutral to polar acidic, polar acidic to polar basic, etc. 
 
-	Base Pair Substitution	Pathogenicity	Amino Acid Sub
-0	None	  Pathogenic	    None
-1	A to T	Neutral/Unknown	NP neutral to P neutral
-2	A to G	N/A	NP neutral to P acidic
-3	A to C	N/A	NP neutral to P basic
-4	T to A	N/A	P neutral to NP neutral
-5	T to G	N/A	P neutral to P acidic
-6	T to C	N/A	P neutral to P basic
-7	G to A	N/A	P acidic to NP neutral
-8	G to T	N/A	P acidic to P neutral
-9	G to C	N/A	P acidic to P basic
-10	C to A	N/A	P basic to NP neutral
-11	C to T	N/A	P basic to P neutral
-12	C to G	N/A	P basic to P acidic
+| Number | Base Pair Substitution | Pathogenicity | Amino Acid Sub |
+| --- | --- | --- | --- |
+| 0 | None | Pathogenic | None |
+| 1 | A to T | Neutral/Unknown | NP neutral to P neutral |
+| 2 | A to G | N/A | NP neutral to P acidic |
+| 3 | A to C | N/A | NP neutral to P basic |
+| 4 | T to A | N/A | P neutral to NP neutral |
+| 5 | T to G | N/A | P neutral to P acidic |
+| 6 | T to C | N/A | P neutral to P basic |
+| 7 | G to A | N/A | P acidic to NP neutral |
+| 8 | G to T | N/A | P acidic to P neutral |
+| 9 | G to C | N/A | P acidic to P basic |
+| 10 | C to A | N/A | P basic to NP neutral |
+| 11 | C to T | N/A | P basic to P neutral |
+| 12 | C to G | N/A | P basic to P acidic |
 
