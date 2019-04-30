@@ -1,5 +1,6 @@
 # 20440 project
 The goal of the files in this repo is to take data from the publication, 'Pan-cancer analysis of neoepitopes' by Vihinen et al., 2018 and online published PON-P2 pathogenicity prediction and visualize the frequency of base pair/amino acid substitutions in neoepitopes across cancer types using dendrograms and heatmaps and evaluate if overarching sigantures assist in explaining the variation seen in cancer neoepitopes. This repo also strives to create an predictive model based on these signatures to see if it possible to predict basepair/amino acid substitutions based on the cancer type of a particular neoantigen. The hope is that these predictions will help in the development of novel cancer vaccines for cancer types. 
+
 ## General Outline
 #### Data Sets: 'Pan-cancer' data-set, pon-p2 data, data1, cancerfreq, data2
 Pan-cancer data set derived from supplementary figure 1 of 'Pan-cancer analysis of neoepitopes' by Vihinen et al., 2018. <br />
@@ -29,12 +30,13 @@ Pan-cancer data set is read in as variable 'S1' and cancer type data from PON-P2
 By iterating through the 'reference nucleotide' and 'altered nucleotide' columns of our merged dataframe, numerical values were assigned based on each base-pair switch. These base pair switches are 'A to T', 'A to G', 'A to C', 'T to A', 'T to G', 'T to C', 'G to A', 'G to T', 'G to C', 'C to A', 'C to T', and 'C to G' and each swtich was assigned a numerical value from 1-12 respectively.  <br />
 Similarly, a numerical index was create for the pathogenicity score where a score of 1 was assigned for a 'pathogenic' designation for a neoepitope and a score of 0 was assigned for a 'unknown or neutral' designation for a neoepitope. This was done by assigning binary scoring while iterating through the 'PON-P2 classification' column of the working dataframe.  <br />
 Finally, a numerical index was created for the amino acid substitution by iterating through the 'Amino_acid_substitution' column of our merged database and parsing out the wild-type amino acid (at position 0) and the mutated amino acid (at position -1, or final position). Each amino acid was assigned a category based on its polarity and charge so the four designations were (non-polar neutral, polar neutral, polar basic and polar acidic). Then, the switches between amino acid designations were given a numerical score from 1-12 (as demonstrated in the sub-key) <br />
+
 | Designation | Amino Acids | 
 | --- | --- | 
-| np_neutral | ['W', 'F', 'G', 'A', 'V', 'I', 'L', 'M', 'P'] | 
-| p_neutral | ['Y', 'S', 'T', 'N', 'Q', 'C'] | 
-| p_acidic | ['D', 'E']| 
-| p_basic | ['R', 'K', 'H']| 
+| np_neutral | W, F, G, A, V, I, L, M, P | 
+| p_neutral | Y, S, T, N, Q, C | 
+| p_acidic | D, E | 
+| p_basic | R, K, H | 
 
 ### create a sub key
 For the creation of categorical variables, a key was created to reference the numerical values assigned for each qualitative entry in BasePair Substitution, Pathogenicity and Amino Acid Substitution. Base Pair substitutions were grouped as A to T, C to G, etc resulting in 12 groupings. Amino Acid Substitutions were groups as non-polar neutral to polar neutral, non-polar neutral to polar acidic, polar acidic to polar basic, etc. 
@@ -128,6 +130,9 @@ Nested for loops are created to iterate through combinations of linkage and dist
 
 ### generate final heatmap/dendrogram with optimized linkage and distance metrics
 Heatmap was generated using seaborn clustermap and fed in 'euclidean' and 'average' for the distance and linkage metrics respectively. Dendrogram was generated using scipy.cluster.hierarchy.dendorgram. 
+
+#### Aim 2: PCA, tSNE and K-means Clustering
+Takes in data2 as an input and outputs 
 
 Sources:
 [1] Niroula, A., & Vihinen, M. (2015). Harmful somatic amino acid substitutions affect key pathways in cancers. BMC Medical Genomics, 8(1), 1–12. https://doi.org/10.1186/s12920-015-0125-x <br />
