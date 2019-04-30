@@ -1,13 +1,13 @@
 # 20.440 project
 The goal of the files in this repo is to take data from the publication, 'Pan-cancer analysis of neoepitopes' by Vihinen et al., 2018 and online published PON-P2 pathogenicity prediction and visualize the frequency of base pair/amino acid substitutions in neoepitopes across cancer types using dendrograms and heatmaps and evaluate if overarching sigantures assist in explaining the variation seen in cancer neoepitopes. <br />
 <br />
-The overall project strives to create an predictive model based on these signatures to see if it possible to predict basepair/amino acid substitutions based on the cancer type of a particular neoantigen. The hope is that these predictions will help in the development of novel cancer vaccines for cancer types. 
+The overall project strives to create an predictive model based on these signatures to see if it is possible to predict basepair/amino acid substitutions based on the cancer type of a particular neoantigen. The hope is that these predictions will help in the development of novel cancer vaccines for cancer types. 
 
 ## General Outline (and Summary of Files)
 #### Data Sets: 'Pan-cancer' data-set, pon-p2 data, data1, cancerfreq, data2
 **pan-cancer.xls** Pan-cancer data set derived from supplementary figure 1 of 'Pan-cancer analysis of neoepitopes' by Vihinen et al., 2018. <br />
 **cosmic.xls** Cancer type data set derived from PON-P2 pathogenicity prediction for various somatic mutations found in cancer. Datasets found at this url: http://structure.bmc.lu.se/PON-P2/cancer30.html/ <br />
-**data1.csv/data2.csv** data1/data2: merged datasets combining data from source 1 and source 2 based on ensembl gene ID. Note that data1 contains data only from the merged data sets and data2 contains the same data but with the added normalized average connectivity that is output by the network analysis for each cancer type (see nkapate's repo). These are numerically distinguished by which aim they are used for. <br />
+**data1.csv/data2.csv** data1/data2: merged datasets combining data from pan-cancer.xls and cosmic.xls based on ensembl gene ID. Note that data1 contains data only from the merged data sets and data2 contains the same data but with the added normalized average connectivity that is output by the network analysis for each cancer type (see nkapate's repo). These are numerically distinguished by which aim they are used for. <br />
 **cancerfreq.csv**: dataset generated from base pair/amino acid substitution frequencies in various cancer types (see Aim 1 code). <br />
 #### Aim 0: Creating Working DataFrame.ipynb
 Takes in pan-cancer data set and pon-p2 data as inputs and outputs a merged dataset (data1/data2) for use in future aims. Merging done on the basis of Ensembl-gene ID. 
