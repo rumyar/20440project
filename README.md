@@ -1,21 +1,21 @@
 # 20440 project
 The goal of the files in this repo is to take data from the publication, 'Pan-cancer analysis of neoepitopes' by Vihinen et al., 2018 and online published PON-P2 pathogenicity prediction and visualize the frequency of base pair/amino acid substitutions in neoepitopes across cancer types using dendrograms and heatmaps and evaluate if overarching sigantures assist in explaining the variation seen in cancer neoepitopes. This repo also strives to create an predictive model based on these signatures to see if it possible to predict basepair/amino acid substitutions based on the cancer type of a particular neoantigen. The hope is that these predictions will help in the development of novel cancer vaccines for cancer types. 
 
-## General Outline
+## General Outline (and Summary of Files)
 #### Data Sets: 'Pan-cancer' data-set, pon-p2 data, data1, cancerfreq, data2
-Pan-cancer data set derived from supplementary figure 1 of 'Pan-cancer analysis of neoepitopes' by Vihinen et al., 2018. <br />
-Cancer type data set derived from PON-P2 pathogenicity prediction for various somatic mutations found in cancer. Datasets found at this url: http://structure.bmc.lu.se/PON-P2/cancer30.html/ <br />
-data1/data2: merged datasets combining data from source 1 and source 2 based on ensembl gene ID. Note that data1 and data2 contain the same data and are only numerically distinguished by which aim they are used for. <br />
-cancerfreq: dataset generated from base pair/amino acid substitution frequencies in various cancer types (see Aim 1 code). <br />
-#### Aim 0: Creating Working DataFrame
+**pan-cancer.xls** Pan-cancer data set derived from supplementary figure 1 of 'Pan-cancer analysis of neoepitopes' by Vihinen et al., 2018. <br />
+**cosmic.xls** Cancer type data set derived from PON-P2 pathogenicity prediction for various somatic mutations found in cancer. Datasets found at this url: http://structure.bmc.lu.se/PON-P2/cancer30.html/ <br />
+**data1.csv/data2.csv** data1/data2: merged datasets combining data from source 1 and source 2 based on ensembl gene ID. Note that data1 contains data only from the merged data sets and data2 contains the same data but with the added normalized average connectivity that is output by the network analysis for each cancer type (see nkapate's repo). These are numerically distinguished by which aim they are used for. <br />
+**cancerfreq.csv**: dataset generated from base pair/amino acid substitution frequencies in various cancer types (see Aim 1 code). <br />
+#### Aim 0: Creating Working DataFrame.ipynb
 Takes in pan-cancer data set and pon-p2 data as inputs and outputs a merged dataset (data1/data2) for use in future aims. Merging done on the basis of Ensembl-gene ID. 
-#### Aim 1: Dendrogram and Heatmap
+#### Aim 1: Dendrogram and Heatmap.ipynb
 Takes in data1 as an input and outputs a cancer freq dataframe with frequencies of base pair/amino acid substitutions, a heatmap visualizing these frequencies and a dendrogram/heatmap with cophenetic correlation coefficienct optimized linkage and distance metrics
-#### Aim 2: PCA, tSNE and K-means Clustering
-Takes in data2 as an input and outputs 
+#### Aim 2: PCA, tSNE and K-means Clustering.ipynb
+Takes in data2 as an input and outputs visualizations of dimmensionality reduction techniques such as principle component analysis (PCA) and t-Stochastic Neighbor Embedding (tSNE). In addition, K-means clustering was used to cluster the reduced data to determine if there are in fact overarching cancer neoepitope signatures within the data. 
 
 ## Aim 0: Creating Working DataFrame
-### tldr: takes in pan cancer data set and pon-p2 data as inputs and outputs a merged dataset (data1/data2) for use in future aims
+### Goal: takes in pan cancer data set and pon-p2 data as inputs and outputs a merged dataset (data1) for use in future aims
 
 ### load in data
 Pan-cancer data set derived from supplementary figure 1 of 'Pan-cancer analysis of neoepitopes' by Vihinen et al., 2018. <br />
@@ -61,7 +61,7 @@ For the creation of categorical variables, a key was created to reference the nu
 Once all of the categorical variables have been given numerical indices, the data was stripped of its qualitative variables (Ref_nucleotide, Altered nucleotide, PON-P2 classification) to output a numerical data set, sorted by the geneID, for use moving forward.
 
 ## Aim 1: Dendrogram and Heatmap
-### tldr: takes in data1 as an input and outputs a cancer freq dataframe with frequencies of base pair/amino acid substitutions, a heatmap visualizing these frequencies and a dendrogram/heatmap with cophenetic correlation coefficienct optimized linkage and distance metrics
+### Goal: takes in data1 as an input and outputs a cancer freq dataframe with frequencies of base pair/amino acid substitutions, a heatmap visualizing these frequencies and a dendrogram/heatmap with cophenetic correlation coefficienct optimized linkage and distance metrics
 
 ### load in data
 Read in the csv file created from the DataFrame created in Aim 0: Creating Working DataFrame.ipynb. This file contains information about the merged datasets of various cancer neoepitope types. Specifically, each cancer neoepitope has an associated amino acid substitution, cancer classification, gene ID, length normalized variant frequency, neoantigen frequency, predicted error in pathogenicity calculation, protein length, variant frequency, categorized base pair substitution, and categorized pathogenicity classification. 
@@ -69,24 +69,6 @@ Read in the csv file created from the DataFrame created in Aim 0: Creating Worki
 For the purposes of creating the heatmap and dendrogram in this Aim, the imported packages are pandas (as pd) to create the dataframe, seaborn (as sb) and matplotlib.pyplot (as plt) to graphically visualize groupings, sklearn (preprocessing, decomposition, cluster, ensemble, model_selection, metrics) to standardize the data before analysis and scipy (cluster, spatial) to create groupings for use in the dendrogram and heatmap. 
 ### store numerical data in a pandas dataframe and standardize data for further processing
 Drop all columns that contain qualitative variables so that the dataframe only contains numerical datatypes that can be standardized. The variables with qualitative variables (Amino Acid Substitution, Cancer Classification, gene ID) are rewritten as categorical variables so that the information is not lost. 
-### create a base pair sub key
-For the creation of categorical variables, a key was created to reference the numerical values assigned for each qualitative entry in BasePair Substitution, Pathogenicity and Amino Acid Substitution. Base Pair substitutions were grouped as A to T, C to G, etc resulting in 12 groupings. Amino Acid Substitutions were groups as non-polar neutral to polar neutral, non-polar neutral to polar acidic, polar acidic to polar basic, etc. 
-
-| Number | Base Pair Substitution | Pathogenicity | Amino Acid Sub |
-| --- | --- | --- | --- |
-| 0 | None | Pathogenic | None |
-| 1 | A to T | Neutral/Unknown | NP neutral to P neutral |
-| 2 | A to G | N/A | NP neutral to P acidic |
-| 3 | A to C | N/A | NP neutral to P basic |
-| 4 | T to A | N/A | P neutral to NP neutral |
-| 5 | T to G | N/A | P neutral to P acidic |
-| 6 | T to C | N/A | P neutral to P basic |
-| 7 | G to A | N/A | P acidic to NP neutral |
-| 8 | G to T | N/A | P acidic to P neutral |
-| 9 | G to C | N/A | P acidic to P basic |
-| 10 | C to A | N/A | P basic to NP neutral |
-| 11 | C to T | N/A | P basic to P neutral |
-| 12 | C to G | N/A | P basic to P acidic |
 
 ### calculate frequencies of certain amino acid substitutions, base pair substitutions and pathogenicity classifications for each cancer type
 The function dendrogram data takes in a dataframe and a cancer type. It iterates through the numerical values assigned to the categorical variables in the sub key (in the previous cell) and calculates the number of times in the dataframe the cancer classification is equal to the cancer type of interest and the base pair substitution/amino acid substitution/pathogenicity classification is equal to a specific numerical value. This allows us to create an array of the frequencies of each of the three aforementioned parameters in an individual cancer type. This array is normalized for the number of neoepitope samples within that given cancer type so that it is not unfairly weighted towards estimating higher frequencies in cancer types for which there is more neoepitope data. 
@@ -131,10 +113,27 @@ Nested for loops are created to iterate through combinations of linkage and dist
 ### generate final heatmap/dendrogram with optimized linkage and distance metrics
 Heatmap was generated using seaborn clustermap and fed in 'euclidean' and 'average' for the distance and linkage metrics respectively. Dendrogram was generated using scipy.cluster.hierarchy.dendorgram. 
 
-#### Aim 2: PCA, tSNE and K-means Clustering
-Takes in data2 as an input and outputs 
+## Aim 2: PCA, tSNE and K-means Clustering
+### Goal: takes in data2 as an input and outputs visualizations of dimmensionality reduction techniques such as principle component analysis (PCA) and t-Stochastic Neighbor Embedding (tSNE). In addition, K-means clustering was used to cluster the reduced data to determine if there are in fact overarching cancer neoepitope signatures within the data. 
+### read in and clean up dataframe
+Imports data2.csv and cancerfreq.csv into the Notebook and cleans the dataset of neoepitopes containing NaN values for any single row or column. *Commented out: code that enables reading in the data set directly from GitHub*
+### create categorical variables
+Since the numerical values assigned in the previous aims were useful for ascertaining frequency, they cannot be used for PCA since a value of 12 implies a closer distance to a value of 11 when in reality a numerical desingation of 1 (for an A to T mutation) is a similar distance to 4 (an T to A mutation) as to 6 (T to C mutation). Therefore, categorical variables with binary designations are created. For each neoepitope, if the neoepitope does exhibit an A to T mutation, it is given a binary classification of 1 and if not, a classification of 0. This process is repeated for each base pair and amino acid substitution and each categorical variable is a unique column that is added to the final dataframe. 
+### create numerical dataframe for standardization and PCA
+The non-numercal and repetitive columns are dropped from the dataframe and the data is standardized using sklearn.preprocessing.scale. 
+### run and plot PCA
+PCA is conducted using the package scikit-learn (sklearn) and the decomposition.PCA package within sklearn. The PCA is fit to the standardized numerical dataframe and the resulting principal components are read into a secondary dataframe. In order to visualize how much of the variance in the numerical data is being explained by the PCA analysis, a cumulative graph demonstrating how much more of the variance is explained by each additional PC is created. The sklearn.decomposition.PCA package has a function, pca.explained_variance_ratio that ouputs the variance explained by each PC and based on these values, a cumulative explained variance ratio is calculated. <br />
+Once, the results of the PCA generated, they are plotted using seaborn.lmplot and colored based on cancer type. In subsequent steps we will work to reduce the overcrowding in this image. 
+### determine the maximum contributing features
+Once our PCA graph has been generated, it is important to understand which features are contributing most strongly to our principal components. This is accomplished by calculating the loadings by taking the transpose of the components of the PCA and multiplying them by the square root of the explained variance. *pca3.components_.T x np.sqrt(pca3.explained_variance_)* Once the loadings have been calculated, it is possible to generate a loadings graph to visualize the spread of the features as a function of their contribution to PC1 and PC2. From this graph, it is possible to create a list of the most contributing features by calculating the distance of each point from the origin, and sorting this list for the maximum distance from the origin. The farther a point is from the origin, the greater contribution it has on both PC1 and PC2. From this process, we are able to see that C to T mutations and G to A mutations exhibit the greatest contribution to the variance explained by PC1 and PC2. 
+### visualize PCA for individual cancers
+Since our initial PCA plot was overcrowded, we strive to improve 
+### plot a sampling of the data to better graphically visualize the spread across multiple PCs
+### 3D visualization to encompass a greater amount of the variation in the data
+### tSNE analysis
+### K-means clustering with PC data/tSNE data 
 
-Sources:
+# Sources:
 [1] Niroula, A., & Vihinen, M. (2015). Harmful somatic amino acid substitutions affect key pathways in cancers. BMC Medical Genomics, 8(1), 1–12. https://doi.org/10.1186/s12920-015-0125-x <br />
 
 [2] Jaffee, E. R., & Lutz, E. M. (2014). Jaffee, E. R., & Lutz, E. M. (2014). NIH Public Access. Cancer Immunol Res, 154(11), 2262–2265. https://doi.org/10.1016/j.pain.2013.06.005.Re-Thinking. Cancer Immunol Res, 154(11), 2262–2265. https://doi.org/10.1016/j.pain.2013.06.005. <br />
