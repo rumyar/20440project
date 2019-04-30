@@ -6,7 +6,7 @@ The overall project strives to create an predictive model based on these signatu
 ## General Outline (and Summary of Files)
 #### Data Sets: 'Pan-cancer' data-set, pon-p2 data, data1, cancerfreq, data2
 **pan-cancer.xls** Pan-cancer data set derived from supplementary figure 1 of 'Pan-cancer analysis of neoepitopes' by Vihinen et al., 2018. <br />
-**cosmic.xls** Cancer type data set derived from PON-P2 pathogenicity prediction for various somatic mutations found in cancer. Datasets found at this url: http://structure.bmc.lu.se/PON-P2/cancer30.html/ <br />
+**cosmic.xls** Cancer type data set derived from PON-P2 pathogenicity prediction for various somatic mutations found in cancer. Datasets found at this url: http://structure.bmc.lu.se/PON-P2/cancer30.html/ *note to TAs: this data is not included due to size restriction on GitHub but is not neccesary for running figure-generating code* <br />
 **data1.csv/data2.csv** data1/data2: merged datasets combining data from pan-cancer.xls and cosmic.xls based on ensembl gene ID. Note that data1 contains data only from the merged data sets and data2 contains the same data but with the added normalized average connectivity that is output by the network analysis for each cancer type (see nkapate's repo). These are numerically distinguished by which aim they are used for. <br />
 **cancerfreq.csv**: dataset generated from base pair/amino acid substitution frequencies in various cancer types (see Aim 1 code). <br />
 #### Aim 0: Creating Working DataFrame.ipynb
