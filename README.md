@@ -1,74 +1,27 @@
 # 20440 project
+## Aim 0: Creating Working DataFrame
 ## Aim 1: Using a heatmap and dendrogram 
-#### load in data from github
-#### store data in a pandas dataframe 
-#### import the following packages: 
-##### import matplotlib.pyplot as plt
-  ##### import sklearn
-  ##### from sklearn import preprocessing, decomposition, cluster, ensemble, model_selection, metrics, tree
-  ##### import scipy as sp
-  ##### from scipy import cluster, spatial
-  ##### from scipy.spatial import distance
-  ##### from scipy.spatial.distance import pdist
-  ##### from scipy.cluster import hierarchy 
-  ##### from scipy.cluster.hierarchy import dendrogram, linkage, fcluster
-  #### drop data that is not numerical from the dataframe
+### load in data
+Read in the csv file created from the DataFrame created in Aim 0: Creating Working DataFrame.ipynb. This file contains information about the merged datasets of various cancer neoepitope types. Specifically, each cancer neoepitope has an associated amino acid substitution, cancer classification, gene ID, length normalized variant frequency, neoantigen frequency, predicted error in pathogenicity calculation, protein length, variant frequency, categorized base pair substitution, and categorized pathogenicity classification. 
+### import packages to use 
+For the purposes of creating the heatmap and dendrogram in this Aim, the imported packages are pandas (as pd) to create the dataframe, seaborn (as sb) and matplotlib.pyplot (as plt) to graphically visualize groupings, sklearn (preprocessing, decomposition, cluster, ensemble, model_selection, metrics) to standardize the data before analysis and scipy (cluster, spatial) to create groupings for use in the dendrogram and heatmap. 
+### store numerical data in a pandas dataframe and standardize data for further processing
+Drop all columns that contain qualitative variables so that the dataframe only contains numerical datatypes that can be standardized. The variables with qualitative variables (Amino Acid Substitution, Cancer Classification, gene ID) are rewritten as categorical variables so that the information is not lost. 
 ### create a base pair sub key
-[ ]
-# Base-Pair Sub Key
-key = pd.DataFrame(data = ['None','A to T', 'A to G', 'A to C', 'T to A', 'T to G', 'T to C', 'G to A', 'G to T', 'G to C', 'C to A', 'C to T', 'C to G'], columns = ['Base Pair Substitution'], index  = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
-key['Pathogenicity'] = ['Pathogenic', 'Neutral/Unknown', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A']
-key['Amino Acid Sub'] = ['None', 'NP neutral to P neutral', 'NP neutral to P acidic', 'NP neutral to P basic', 'P neutral to NP neutral', 'P neutral to P acidic', 'P neutral to P basic', 'P acidic to NP neutral', 'P acidic to P neutral', 'P acidic to P basic', 'P basic to NP neutral', 'P basic to P neutral', 'P basic to P acidic']
-[ ]
-def dendrogram_data(df, cancer_type):
-    num_values = df.loc[df['Cancer Classification'] == cancer_type].shape[0]
-    array = []
-    for i in range(1,13):
-        array.append((data.loc[(data['Cancer Classification'] == cancer_type) & (data['Base Pair Substitutions'] == i)]).shape[0])
-    for j in range(1,13):
-        array.append((data.loc[(data['Cancer Classification'] == cancer_type) & (data['Amino Acid Classification'] == j)]).shape[0])
-    array.append((data.loc[(data['Cancer Classification'] == cancer_type) & (data['Pathogenicity Classification'] == 1)]).shape[0])
-    array[:] = [x/num_values for x in array]
-    return array
-[ ]
-import numpy as np
-cancer_freq = pd.DataFrame()
-cancer_types = ['ALL','AML', 'breast', 'bladder', 'cervix', 'CLL', 'colorectum', 'esophageal', 'glioblastoma', 'glioma low grade', 'head and neck', 'kidney clear cell', 'kidney papillary', 'liver', 'lung adenocarcinoma', 'lung small cell', 'lung squamous', 'medulloblastoma', 'melanoma', 'neuroblastoma', 'ovary', 'pancreas', 'prostate', 'thyroid', 'uterus']
-for cancer in cancer_types:
-    cancer_freq[cancer] = dendrogram_data(data, cancer)
-indices = np.array(['A to T', 'A to G', 'A to C', 'T to A', 'T to G', 'T to C', 'G to A', 'G to T', 'G to C', 'C to A', 'C to T', 'C to G', 'NP neutral to P neutral', 'NP neutral to P acidic', 'NP neutral to P basic', 'P neutral to NP neutral', 'P neutral to P acidic', 'P neutral to P basic', 'P acidic to NP neutral', 'P acidic to P neutral', 'P acidic to P basic', 'P basic to NP neutral', 'P basic to P neutral', 'P basic to P acidic', 'Pathogenic']) 
-cancer_freq.set_index(indices)
-cancer_freq.to_csv('cancerfreq.csv')
-[ ]
-sb.heatmap(cancer_freq, yticklabels = indices)
-plt.show()
-cancer_freq_std = sklearn.preprocessing.scale(cancer_freq)
-cancer_freq_std = pd.DataFrame(data = cancer_freq_std, columns = cancer_freq.columns, index =  cancer_freq.index)
-sb.heatmap(cancer_freq_std, yticklabels = indices)
-plt.show()
+For the creation of categorical variables, a key was created to reference the numerical values assigned for each qualitative entry in BasePair Substitution, Pathogenicity and Amino Acid Substitution. Base Pair substitutions were grouped as A to T, C to G, etc resulting in 12 groupings. Amino Acid Substitutions were groups as non-polar neutral to polar neutral, non-polar neutral to polar acidic, polar acidic to polar basic, etc. 
 
-[ ]
-#cancer_freq_std = cancer_freq_std.drop(['COSMIC'], axis = 1)
-plt.figure(figsize=(12, 5)) 
-sb.clustermap(cancer_freq_std, metric = 'euclidean', method = 'average', yticklabels = indices)
-plt.title('Heatmap of Hierarchially Clustered Values')
-plt.show()
-​
-plt.figure(figsize=(12, 5))  
-linked = linkage(cancer_freq_std, 'ward')
-labelList = cancer_freq.columns
-dendrogram(linked, orientation='top',labels=labelList, distance_sort='descending',show_leaf_counts=True)
-plt.xlabel('Cancer Types')
-plt.ylabel('Distance')
-plt.title('Dendrogram of Hierarchially Clustered Data')
-plt.show() 
+	Base Pair Substitution	Pathogenicity	Amino Acid Sub
+0	None	  Pathogenic	    None
+1	A to T	Neutral/Unknown	NP neutral to P neutral
+2	A to G	N/A	NP neutral to P acidic
+3	A to C	N/A	NP neutral to P basic
+4	T to A	N/A	P neutral to NP neutral
+5	T to G	N/A	P neutral to P acidic
+6	T to C	N/A	P neutral to P basic
+7	G to A	N/A	P acidic to NP neutral
+8	G to T	N/A	P acidic to P neutral
+9	G to C	N/A	P acidic to P basic
+10	C to A	N/A	P basic to NP neutral
+11	C to T	N/A	P basic to P neutral
+12	C to G	N/A	P basic to P acidic
 
-[ ]
-linkages = ['complete', 'average', 'weighted', 'ward']
-distances = ['euclidean', 'cityblock', 'cosine', 'correlation', 'hamming', 'jaccard', 'chebyshev', 'canberra']
-array = []
-for distance in distances:
-    for linked in linkages:
-        distance_1 = sp.spatial.distance.pdist(cancer_freq_std, metric = distance)
-        linked_1 = linkage(cancer_freq_std, method = linked)
-        array.append(hierarchy.cophenet(linked_1, distance_1)[0])
